@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": ".agents",
+			"path": "../../Manware-s-AI-Learning-Toolkit/.agents"
+		},
+		{
+			"name": "AlgoMentor-AI",
+			"path": ".."
+		}
+	],
+	"settings": {}
+}

@@ -1,218 +1,136 @@
-# AlgoMentor AI 🚀
+# AlgoMentor-AI 
 
-### Intelligent Adaptive DSA Learning & Mentorship Platform
+**An AI-powered DSA learning platform that mentors, not just judges.**
 
-AlgoMentor AI is an AI-powered platform designed to help students and developers master **Data Structures & Algorithms (DSA)** through personalized mentorship, adaptive learning, and intelligent problem-solving guidance.
+AlgoMentor AI combines an online coding judge with a persistent AI mentor: instead of static hints or handing over solutions, it guides you through a gated, execution-trace-aware hint ladder, tracks your topic mastery over time (with realistic forgetting/decay), and adapts what you practice next — including resurfacing weak topics via spaced repetition using structurally similar (not repeated) problems.
 
-Unlike traditional coding platforms, AlgoMentor AI focuses not only on solving problems, but on understanding *how the learner thinks*, identifying weaknesses, and dynamically adapting the learning journey.
-
----
-
-# 🌟 Vision
-
-> Build the world’s most intelligent AI mentor for DSA learning.
+> Full product spec: [`docs/PRD.md`](./docs/PRD.md) — read this before proposing architecture changes.
 
 ---
 
-# ✨ Key Features
+## Why AlgoMentor?
 
-## 🧠 AI Mentor System
-- Personalized AI guidance
-- Socratic teaching approach
-- Multi-style explanations
-- Adaptive hints
-- Code review & optimization feedback
+Most platforms help you solve more problems. AlgoMentor is built to help you become a better problem solver — by remembering how you learn, not just what you've solved.
 
----
-
-## 💻 Coding Platform
-- Online code editor
-- Secure code execution sandbox
-- Test case execution
-- Submission tracking
-- Multi-language support (planned)
+- **Execution-aware hints** — hints are generated from the actual variable state at your point of failure, not just a static guess from your code.
+- **Hint gating that's structurally enforced** — the AI literally cannot see the full solution at low hint levels; it's not just told to withhold it.
+- **Decay-based mastery tracking** — a "seen vs. owned" distinction, so hint-assisted solves don't fake out your progress dashboard.
+- **Isomorphic spaced repetition** — reinforcement uses structurally similar problems, not repeats, so you practice the underlying skill, not memorized tricks.
 
 ---
 
-## 📈 Adaptive Learning Engine
-- Weak topic detection
-- Personalized recommendations
-- Knowledge graph-based learning
-- Spaced repetition system
-- Dynamic difficulty adjustment
+## Tech Stack
 
----
-
-## 📊 Analytics Dashboard
-- Topic mastery tracking
-- Accuracy & speed analytics
-- Learning streaks
-- Progress heatmaps
-- Performance trends
-
----
-
-## 🎯 Learning Modes
-- Daily study plans
-- Contest preparation mode
-- Interview preparation mode
-- Deep dive concept visualizations
-
----
-
-# 🏗️ System Architecture
-
-```text
-Frontend (React / Next.js)
-        ↓
-Backend API (FastAPI)
-        ↓
---------------------------------
-| AI Mentor Engine             |
-| Recommendation Engine        |
-| Problem Management System    |
-| Sandbox Execution Service    |
-| Analytics Service            |
---------------------------------
-        ↓
-PostgreSQL + Redis
-        ↓
-LLM APIs (OpenAI / Grok / Claude)
-```
-
----
-
-# 🛠️ Tech Stack
-
-| Layer | Technology |
+| Layer | Tech |
 |---|---|
-| Frontend | React / Next.js |
-| Styling | Tailwind CSS |
-| UI Components | shadcn/ui |
-| Backend | FastAPI |
-| Database | PostgreSQL |
+| Frontend | Next.js, Tailwind CSS, shadcn/ui |
+| Backend | FastAPI (Python) |
+| Database | PostgreSQL (+ pgvector) |
 | Cache | Redis |
-| Authentication | Clerk |
-| AI Layer | OpenAI + LangChain |
-| Sandbox | Docker |
-| Deployment | Vercel + Railway |
+| Code Execution | Judge0 (self-hosted) / Piston / E2B, behind a swappable adapter |
+| AI Layer | Tiered LLM routing — cheap hosted model for early hints, frontier model for deep hints & code review |
+| Auth | Clerk |
+
+Current phase deliberately avoids custom sandbox infrastructure (no self-built Firecracker/microVM orchestration) — see `docs/PRD.md` for the reasoning.
 
 ---
 
-# 📂 Project Structure
+## Project Structure
 
-```text
+```
 algomentor-ai/
-│
-├── frontend/        # React / Next.js frontend
-├── backend/         # FastAPI backend
-├── sandbox/         # Secure code execution service
-├── ai-services/     # AI mentor & recommendation logic
-├── docs/            # Documentation
-└── infra/           # Deployment & infrastructure configs
+├── frontend/                 # Next.js app
+├── backend/
+│   ├── api/                  # FastAPI routes
+│   ├── sandbox_adapter/      # Code execution provider abstraction
+│   ├── mentor/               # Hint orchestration & gating
+│   ├── mastery/              # Decay model, confidence scoring, variant mapping
+│   ├── problem_ingestion/    # Test-case generation pipeline
+│   └── recommendation/       # Adaptive scheduling logic
+├── docs/
+│   └── PRD.md
+├── infra/                    # Deployment configs
+└── tests/
 ```
 
 ---
 
-# 🚧 Current Development Status
+## Getting Started
 
-## MVP Goals
-- [ ] User Authentication
-- [ ] Problem Solving Interface
-- [ ] Code Execution Sandbox
-- [ ] AI Mentor Chat
-- [ ] Progress Tracking
-- [ ] Recommendation Engine
+### Prerequisites
+- Node.js 20+
+- Python 3.11+
+- PostgreSQL 15+ (with `pgvector` extension)
+- Redis
+- Docker (for running Judge0 locally)
+
+### Setup
+
+```bash
+# clone
+git clone https://github.com/<your-org>/algomentor-ai.git
+cd algomentor-ai
+
+# backend
+cd backend
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env   # fill in DB, Redis, LLM API keys
+
+# frontend
+cd ../frontend
+npm install
+cp .env.local.example .env.local
+
+# sandbox (Judge0, local dev)
+docker compose -f infra/judge0-compose.yml up -d
+```
+
+### Running locally
+
+```bash
+# backend
+cd backend && uvicorn api.main:app --reload
+
+# frontend
+cd frontend && npm run dev
+```
+
+### Running tests
+
+```bash
+# backend
+cd backend && pytest
+
+# frontend
+cd frontend && npm test
+```
 
 ---
 
-# 🧠 Long-Term Vision
+## Current Status — Phase 0 (MVP Validation)
 
-Future planned features include:
+- [ ] Coding judge integrated via sandbox adapter (Judge0)
+- [ ] ~75 curated core-pattern problems, each passed through the test-generation pipeline
+- [ ] Hint ladder (levels 1–4) with gating and output filtering
+- [ ] Basic mastery dashboard ("seen vs. owned")
 
-- AI-generated custom problems
-- Voice-based AI mentor
-- Interview simulation
-- Contest coaching
-- Browser extension
-- Collaborative coding rooms
-- Knowledge graph visualization
-- AI debugging agents
+See [`docs/PRD.md`](./docs/PRD.md) Section 16 for the full phased roadmap (Phase 1: execution-trace hints & isomorphic spaced repetition; Phase 2: monetization & B2B; Phase 3: cross-platform profile).
 
 ---
 
-# 🔐 Security Considerations
+## Contributing
 
-User-submitted code is executed inside isolated Docker containers with:
-- CPU & memory limits
-- Timeout controls
-- Restricted filesystem access
-- Network isolation
+Before contributing, read [`AGENTS.md`](./AGENTS.md) — it documents architectural guardrails (e.g. hint-gating enforcement, sandbox abstraction) that are load-bearing product decisions, not arbitrary style preferences. This applies whether you're a human contributor or an AI coding agent.
 
----
-
-# 🎯 Why AlgoMentor AI?
-
-Most platforms help users:
-> solve more problems.
-
-AlgoMentor AI aims to help users:
-> become better problem solvers.
-
-The platform focuses on:
-- learning intelligence,
-- adaptive mentorship,
-- conceptual understanding,
-- and long-term mastery.
-
----
-
-# 🤝 Contributing
-
-Contributions, ideas, and feedback are welcome!
-
-## Areas where contributions are appreciated:
+Areas open for contribution:
 - Frontend UI/UX
-- AI prompt engineering
-- Sandbox security
-- Recommendation systems
-- Analytics dashboards
-- DevOps & deployment
+- Hint-orchestration prompt engineering (within the gating constraints in `AGENTS.md`)
+- Problem bank curation + test-case generation
+- Recommendation/spaced-repetition logic
 
 ---
 
-# 📌 Development Roadmap
-
-## Phase 1 — MVP
-- Authentication
-- Problem interface
-- Sandbox execution
-- AI mentor basics
-
-## Phase 2 — Intelligence Layer
-- Weakness tracking
-- Personalized recommendations
-- Adaptive learning engine
-
-## Phase 3 — Advanced AI
-- Socratic mentor
-- Voice tutor
-- Interview simulation
-
----
-
-# 📜 License
+## License
 
 MIT License
-
----
-
-# ⭐ Support the Project
-
-If you like the idea, consider:
-- starring the repository,
-- contributing,
-- or sharing feedback.
-
-Together, let’s build the future of AI-powered technical education 🚀
-
