@@ -1,3 +1,8 @@
 .agents/
+.cursor/
+.antigravity/
 
 AGENTS.md
+
+backend/.env
+frontend/.env
