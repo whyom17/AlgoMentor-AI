@@ -1,0 +1,12 @@
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+select = ["E", "F", "I", "N", "W", "UP", "B", "C4", "PT"]
+# B008: FastAPI Depends() in defaults — canonical and intentional
+# UP017: datetime.UTC alias — both forms accepted in our codebase
+# E741: ambiguous 'l' in list comprehensions — acceptable in short scopes
+# N8xx: naming conventions — relaxed for FastAPI route signatures
+ignore = ["E501", "B008", "UP017", "E741", "N801", "N802", "N803", "N806"]
+
+[tool.ruff.isort]
+known-first-party = ["app"]

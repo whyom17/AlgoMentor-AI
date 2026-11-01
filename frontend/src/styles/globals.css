@@ -1,0 +1,113 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: #0a0d14;
+  --bg-surface: #0f1421;
+  --bg-elevated: #141b2d;
+  --border-subtle: rgba(99, 132, 255, 0.12);
+  --text-primary: #e8ecf4;
+  --text-secondary: #8b96b0;
+  --text-muted: #4a5270;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: #243558;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2952ff;
+}
+
+/* Selection */
+::selection {
+  background: rgba(41, 82, 255, 0.3);
+  color: #e8ecf4;
+}
+
+/* Glass card utility */
+.glass {
+  background: rgba(15, 20, 33, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
+}
+
+.glass-elevated {
+  background: rgba(20, 27, 45, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(99, 132, 255, 0.18);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #4d78ff 0%, #a78bfa 50%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glow effect */
+.glow-blue {
+  box-shadow: 0 0 20px rgba(41, 82, 255, 0.25), 0 0 40px rgba(41, 82, 255, 0.1);
+}
+
+/* Shimmer skeleton loading */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    #141b2d 25%,
+    #1a2540 50%,
+    #141b2d 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Difficulty badges */
+.badge-easy {
+  @apply text-xs font-semibold px-2 py-0.5 rounded-full bg-success-500/15 text-success-400 border border-success-500/30;
+}
+.badge-medium {
+  @apply text-xs font-semibold px-2 py-0.5 rounded-full bg-warning-500/15 text-warning-400 border border-warning-500/30;
+}
+.badge-hard {
+  @apply text-xs font-semibold px-2 py-0.5 rounded-full bg-danger-500/15 text-danger-400 border border-danger-500/30;
+}
+
+/* Status indicator dot */
+.status-accepted { @apply text-success-400; }
+.status-wrong_answer { @apply text-danger-400; }
+.status-time_limit_exceeded { @apply text-warning-400; }
+.status-runtime_error { @apply text-danger-400; }
+.status-compile_error { @apply text-orange-400; }
+.status-pending, .status-running { @apply text-brand-400; }

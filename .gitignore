@@ -1,8 +1,35 @@
-.agents/
-.cursor/
-.antigravity/
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+.venv/
+env/
+venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+*.cover
 
-AGENTS.md
+# Node / Next.js
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+frontend/.env.local
 
-backend/.env
-frontend/.env
+# Docker
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
