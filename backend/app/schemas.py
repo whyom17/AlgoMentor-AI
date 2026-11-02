@@ -50,6 +50,7 @@ class ProblemListItem(BaseModel):
     slug: str
     title: str
     difficulty: str
+    difficulty_rating: float = 1200.0
     tags: list[str]
     pattern_family: str
 
@@ -62,6 +63,7 @@ class ProblemDetail(BaseModel):
     title: str
     description: str
     difficulty: str
+    difficulty_rating: float = 1200.0
     tags: list[str]
     pattern_family: str
     starter_code: dict[str, str]
@@ -84,8 +86,8 @@ class SubmitCodeRequest(BaseModel):
 
 class SubmitCodeResponse(BaseModel):
     attempt_id: uuid.UUID
-    judge0_token: str
-    status: str  # "pending" initially
+    judge0_token: str = ""
+    status: str
 
 
 class AttemptResultResponse(BaseModel):
@@ -96,8 +98,9 @@ class AttemptResultResponse(BaseModel):
     compile_output: str
     time_ms: float | None
     memory_kb: int | None
+    execution_trace: dict[str, Any] | None = None
     # Per-test-case results (if available)
-    test_results: list[dict[str, Any]] = []
+    test_results: list[dict[str, Any]] = Field(default_factory=list)
 
 
 # ─── Hints ────────────────────────────────────────────────────────────────────

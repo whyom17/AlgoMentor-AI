@@ -7,9 +7,9 @@ import { Brain, Code2, TrendingUp, Zap, ArrowRight, CheckCircle } from 'lucide-r
 const features = [
   {
     icon: Brain,
-    title: 'Execution-Aware Hints',
+    title: 'Result-Aware Hints',
     description:
-      'Hints grounded in your actual variable state at the point of failure — not generic guesses.',
+      'A gated hint ladder responds to your latest run result and the code you are working through.',
     color: 'text-brand-400',
     bg: 'bg-brand-500/10 border-brand-500/20',
   },
@@ -31,19 +31,19 @@ const features = [
   },
   {
     icon: Zap,
-    title: 'Adaptive Recommendations',
+    title: 'Next-Step Recommendations',
     description:
-      'Isomorphic variant problems served at the right time — same invariant, different skin.',
+      'Review due topics and continue with problems you have not attempted yet.',
     color: 'text-warning-400',
     bg: 'bg-warning-500/10 border-warning-500/20',
   },
 ];
 
 const stats = [
-  { label: 'Core Problems', value: '75+' },
-  { label: 'Pattern Families', value: '14' },
+  { label: 'Core Problems', value: '10' },
+  { label: 'Pattern Families', value: '10' },
   { label: 'Hint Levels', value: '4' },
-  { label: 'Languages', value: '6' },
+  { label: 'Languages', value: '1' },
 ];
 
 export default function LandingPage() {
@@ -92,7 +92,7 @@ export default function LandingPage() {
           >
             <div className="inline-flex items-center gap-2 text-xs font-mono px-3 py-1.5 rounded-full glass border border-brand-500/30 text-brand-300 mb-8">
               <span className="w-1.5 h-1.5 rounded-full bg-brand-400 animate-pulse" />
-              Phase 0 — MVP now live
+              Phase 0 — MVP preview
             </div>
 
             <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6">
@@ -102,9 +102,8 @@ export default function LandingPage() {
             </h1>
 
             <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-              AlgoMentor AI is a DSA learning platform that acts as a persistent personal
-              mentor — execution-aware hints, mastery decay, and adaptive spaced repetition
-              built into every problem.
+              Practice DSA with per-test grading, a gated hint ladder, and a mastery dashboard
+              that tracks how your understanding changes over time.
             </p>
 
             <div className="flex items-center justify-center gap-4 flex-wrap">
@@ -182,7 +181,7 @@ export default function LandingPage() {
           <div className="space-y-3">
             {[
               { level: 1, label: 'Clarifying question', detail: 'What does the problem actually ask? What invariant might you be missing?', badge: 'Free' },
-              { level: 2, label: 'Pattern nudge', detail: 'Names the technique family — two-pointer, sliding window, monotomic stack — without revealing the algorithm.', badge: 'Free' },
+              { level: 2, label: 'Pattern nudge', detail: 'Names a technique family without giving the implementation.', badge: 'Free' },
               { level: 3, label: 'Pseudocode skeleton', detail: 'Structural outline of the solution with key invariant. No runnable code at this level.', badge: 'Pro: 3/day free' },
               { level: 4, label: 'Full walkthrough', detail: 'Complete algorithm with working code. Gated behind 3+ attempts or 10+ minutes. Logged as assisted.', badge: 'Pro: unlimited' },
             ].map((h) => (
@@ -208,7 +207,7 @@ export default function LandingPage() {
       <section className="py-24 px-6 text-center">
         <div className="max-w-2xl mx-auto">
           <h2 className="text-4xl font-bold text-white mb-4">Ready to actually learn DSA?</h2>
-          <p className="text-gray-400 mb-8">No credit card. 10 problems, 14 patterns, real mentorship.</p>
+          <p className="text-gray-400 mb-8">10 curated problems, 10 pattern families, four hint levels.</p>
           <Link
             href="/register"
             className="inline-flex items-center gap-2 px-10 py-4 rounded-xl bg-brand-500 hover:bg-brand-400 text-white font-semibold text-lg transition-all glow-blue"
@@ -220,7 +219,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="border-t border-surface-700 py-8 px-6 text-center text-sm text-gray-600">
-        © 2026 AlgoMentor AI · Phase 0 MVP
+        © 2026 AlgoMentor AI · Phase 0 preview
       </footer>
     </div>
   );

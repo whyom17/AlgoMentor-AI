@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Brain, Search, Filter, LogOut, BarChart3, CheckCircle2 } from 'lucide-react';
+import { Brain, Search, Filter, LogOut, BarChart3, CheckCircle2, RefreshCw } from 'lucide-react';
 import { api } from '@/lib/api';
 import { useAuthStore } from '@/lib/store';
 import type { ProblemListItem } from '@/types/api';
@@ -18,24 +18,28 @@ export default function ProblemsPage() {
   const { user, logout } = useAuthStore();
   const [problems, setProblems] = useState<ProblemListItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
   const [search, setSearch] = useState('');
   const [diffFilter, setDiffFilter] = useState<string>('');
 
   useEffect(() => {
     const fetch = async () => {
       try {
+        setLoading(true);
+        setLoadError(false);
         const params = new URLSearchParams();
         if (diffFilter) params.set('difficulty', diffFilter);
         const { data } = await api.get<ProblemListItem[]>(`/problems?${params}`);
         setProblems(data);
       } catch {
-        // handle error
+        setLoadError(true);
       } finally {
         setLoading(false);
       }
     };
     fetch();
-  }, [diffFilter]);
+  }, [diffFilter, retryCount]);
 
   const filtered = problems.filter((p) =>
     p.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -120,6 +124,16 @@ export default function ProblemsPage() {
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="h-16 rounded-xl shimmer" />
             ))}
+          </div>
+        ) : loadError ? (
+          <div role="alert" className="glass rounded-xl border border-danger-500/20 p-8 text-center">
+            <p className="text-gray-300">Problem bank unavailable. Start PostgreSQL and seed the problem bank, then retry.</p>
+            <button
+              onClick={() => setRetryCount((count) => count + 1)}
+              className="inline-flex items-center gap-2 mt-4 text-sm text-brand-300 hover:text-white"
+            >
+              <RefreshCw className="w-4 h-4" /> Retry
+            </button>
           </div>
         ) : (
           <div className="space-y-2">

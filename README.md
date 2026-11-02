@@ -86,6 +86,36 @@ cp .env.local.example .env.local
 docker compose -f infra/judge0-compose.yml up -d
 ```
 
+### Windows (PowerShell)
+
+Start the database, Redis, and Judge0 services from the repository root:
+
+```powershell
+docker compose up -d postgres redis judge0-server judge0-worker
+```
+
+In a backend terminal:
+
+```powershell
+Set-Location backend
+py -3.12 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+Copy-Item .env.example .env
+python -m app.problem_ingestion.seed_problems
+python -m uvicorn app.main:app --reload
+```
+
+In a separate frontend terminal:
+
+```powershell
+Set-Location frontend
+npm.cmd install
+npm.cmd run dev
+```
+
+Open `http://localhost:3000`. Level 1 hints use a local template; Levels 2–4 need a configured provider API key in `backend/.env`.
+
 ### Running locally
 
 ```bash
@@ -105,17 +135,6 @@ cd backend && pytest
 # frontend
 cd frontend && npm test
 ```
-
----
-
-## Current Status — Phase 0 (MVP Validation)
-
-- [ ] Coding judge integrated via sandbox adapter (Judge0)
-- [ ] ~75 curated core-pattern problems, each passed through the test-generation pipeline
-- [ ] Hint ladder (levels 1–4) with gating and output filtering
-- [ ] Basic mastery dashboard ("seen vs. owned")
-
-See [`docs/PRD.md`](./docs/PRD.md) Section 16 for the full phased roadmap (Phase 1: execution-trace hints & isomorphic spaced repetition; Phase 2: monetization & B2B; Phase 3: cross-platform profile).
 
 ---
 

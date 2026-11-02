@@ -179,6 +179,14 @@ def _build_level4_messages(ctx: HintContext) -> list[dict[str, str]]:
     return [{"role": "system", "content": system}, {"role": "user", "content": user_msg}]
 
 
+def _level1_template(ctx: HintContext) -> str:
+    if ctx.last_status == "wrong_answer":
+        return "What is the smallest input where your output differs from the expected result, and which assumption does that example challenge?"
+    if ctx.last_status in ("runtime_error", "compile_error"):
+        return "Which line does the error point to, and what value or type does that line receive?"
+    return "Can you trace one example by hand and compare what each step of your code does with what the problem asks for?"
+
+
 _MESSAGE_BUILDERS = {
     1: _build_level1_messages,
     2: _build_level2_messages,
@@ -229,10 +237,14 @@ async def get_hint(ctx: HintContext, requested_level: int) -> HintResponse:
     builder = _MESSAGE_BUILDERS.get(level, _build_level1_messages)
     messages = builder(ctx)
 
-    tier = get_tier_for_hint_level(level)
     t0 = time.monotonic()
-
-    raw_text, model_used, tokens = await call_llm(messages, tier, hint_level=level)
+    if level == 1:
+        raw_text = _level1_template(ctx)
+        model_used = "template"
+        tokens = 0
+    else:
+        tier = get_tier_for_hint_level(level)
+        raw_text, model_used, tokens = await call_llm(messages, tier, hint_level=level)
 
     latency_ms = int((time.monotonic() - t0) * 1000)
 

@@ -117,6 +117,8 @@ class Problem(Base):
     # Time / memory limits
     time_limit_ms: Mapped[int] = mapped_column(Integer, default=2000)
     memory_limit_mb: Mapped[int] = mapped_column(Integer, default=256)
+    # ELO-style calibration used in Phase 1 to estimate difficulty from real outcomes.
+    difficulty_rating: Mapped[float] = mapped_column(Float, default=1200.0)
     is_published: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()

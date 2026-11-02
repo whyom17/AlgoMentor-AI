@@ -194,3 +194,31 @@ def mastery_label(score: float, attempt_count: int) -> str:
     if score < 0.88:
         return "proficient"
     return "owned"
+
+
+def update_problem_difficulty(
+    current_rating: float,
+    solved: bool,
+    max_hint_level: int = 0,
+    k_factor: float = 32.0,
+) -> float:
+    """Adjust a problem's ELO-style difficulty rating after one submission.
+
+    Higher ratings mean harder problems. Independent solves increase the problem's
+    rating; heavy hint assistance or failures pull it down.
+    """
+    baseline_rating = 1200.0
+    rating = float(current_rating or baseline_rating)
+
+    if solved:
+        outcome_score = 1.0
+        if max_hint_level >= 1:
+            outcome_score -= 0.08 * max_hint_level
+        if max_hint_level >= 4:
+            outcome_score = 0.2
+    else:
+        outcome_score = 0.0
+
+    expected_score = 1.0 / (1.0 + 10 ** ((baseline_rating - rating) / 400.0))
+    adjusted = rating + k_factor * (outcome_score - expected_score)
+    return round(max(300.0, min(2200.0, adjusted)), 2)

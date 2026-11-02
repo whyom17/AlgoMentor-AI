@@ -13,7 +13,7 @@ import type { ProblemDetail, AttemptResultResponse, HintResponse, SubmitCodeResp
 
 const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 
-const LANGUAGES = ['python', 'java', 'cpp', 'javascript'];
+const LANGUAGES = ['python'];
 
 function DifficultyBadge({ difficulty }: { difficulty: string }) {
   const cls = difficulty === 'easy' ? 'badge-easy' : difficulty === 'medium' ? 'badge-medium' : 'badge-hard';
@@ -229,6 +229,10 @@ export default function ProblemPage() {
                 <div>
                   <h1 className="text-xl font-bold text-white mb-3">{problem.title}</h1>
                   <div className="flex flex-wrap gap-1.5 mb-4">
+                    <DifficultyBadge difficulty={problem.difficulty} />
+                    <span className="text-xs text-brand-300 bg-brand-500/10 border border-brand-500/20 px-2 py-0.5 rounded-full">
+                      Rating {problem.difficulty_rating}
+                    </span>
                     {problem.tags.map((t) => (
                       <span key={t} className="text-xs text-gray-500 bg-surface-700 px-2 py-0.5 rounded-full">{t}</span>
                     ))}
@@ -297,6 +301,64 @@ export default function ProblemPage() {
                       <div>
                         <div className="text-xs font-semibold text-orange-400 mb-2">Compile output</div>
                         <pre className="text-xs font-mono text-orange-300 bg-orange-500/5 border border-orange-500/20 rounded-xl p-4 overflow-auto max-h-48 whitespace-pre-wrap">{result.compile_output}</pre>
+                      </div>
+                    )}
+                    {result.execution_trace && (
+                      <div className="glass rounded-xl p-4 border border-brand-500/20 bg-brand-500/5">
+                        <div className="text-xs font-semibold text-brand-300 mb-3">Execution trace</div>
+                        <div className="space-y-2 text-xs text-gray-300 font-mono">
+                          {result.execution_trace.case_index && (
+                            <div><span className="text-gray-500">Case:</span> {result.execution_trace.case_index}</div>
+                          )}
+                          {result.execution_trace.failed_input && (
+                            <div>
+                              <div className="text-gray-500">Input</div>
+                              <pre className="mt-1 whitespace-pre-wrap bg-surface-900/80 rounded p-2">{result.execution_trace.failed_input}</pre>
+                            </div>
+                          )}
+                          {result.execution_trace.expected_output && (
+                            <div>
+                              <div className="text-gray-500">Expected</div>
+                              <pre className="mt-1 whitespace-pre-wrap bg-surface-900/80 rounded p-2">{result.execution_trace.expected_output}</pre>
+                            </div>
+                          )}
+                          {result.execution_trace.actual_output && (
+                            <div>
+                              <div className="text-gray-500">Actual</div>
+                              <pre className="mt-1 whitespace-pre-wrap bg-surface-900/80 rounded p-2">{result.execution_trace.actual_output}</pre>
+                            </div>
+                          )}
+                          {result.execution_trace.error_message && (
+                            <div>
+                              <div className="text-gray-500">Failure</div>
+                              <pre className="mt-1 whitespace-pre-wrap bg-surface-900/80 rounded p-2 text-danger-300">{result.execution_trace.error_message}</pre>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    {result.test_results.length > 0 && (
+                      <div className="space-y-2">
+                        <div className="text-xs font-semibold text-gray-500">
+                          Tests passed: {result.test_results.filter((test) => test.status === 'passed').length} / {result.test_results.length}
+                        </div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {result.test_results.map((test) => (
+                            <span
+                              key={test.case}
+                              className={`inline-flex h-6 min-w-6 items-center justify-center rounded px-2 text-xs font-mono ${
+                                test.status === 'passed'
+                                  ? 'bg-success-500/10 text-success-400'
+                                  : test.status === 'failed'
+                                  ? 'bg-danger-500/10 text-danger-400'
+                                  : 'bg-warning-500/10 text-warning-400'
+                              }`}
+                              title={`Test ${test.case}: ${test.status}`}
+                            >
+                              {test.case}
+                            </span>
+                          ))}
+                        </div>
                       </div>
                     )}
                   </div>

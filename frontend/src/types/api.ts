@@ -22,6 +22,7 @@ export interface ProblemListItem {
   slug: string;
   title: string;
   difficulty: 'easy' | 'medium' | 'hard';
+  difficulty_rating: number;
   tags: string[];
   pattern_family: string;
 }
@@ -38,6 +39,7 @@ export interface ProblemDetail {
   title: string;
   description: string;
   difficulty: 'easy' | 'medium' | 'hard';
+  difficulty_rating: number;
   tags: string[];
   pattern_family: string;
   starter_code: Record<string, string>;
@@ -72,7 +74,14 @@ export interface AttemptResultResponse {
   compile_output: string;
   time_ms: number | null;
   memory_kb: number | null;
-  test_results: Array<Record<string, unknown>>;
+  execution_trace?: {
+    failed_input?: string;
+    expected_output?: string;
+    actual_output?: string;
+    error_message?: string;
+    case_index?: number;
+  } | null;
+  test_results: Array<{ case: number; status: 'passed' | 'failed' | 'error' }>;
 }
 
 export interface HintResponse {

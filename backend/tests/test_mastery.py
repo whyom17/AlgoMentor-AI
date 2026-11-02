@@ -6,6 +6,7 @@ from app.mastery.decay_model import (
     apply_decay,
     compute_mastery_update,
     mastery_label,
+    update_problem_difficulty,
 )
 
 
@@ -91,3 +92,18 @@ class TestMasteryLabel:
 
     def test_owned_label(self) -> None:
         assert mastery_label(0.95, attempt_count=10) == "owned"
+
+
+class TestDifficultyCalibration:
+    def test_independent_solve_increases_rating(self) -> None:
+        updated = update_problem_difficulty(1200.0, solved=True, max_hint_level=0)
+        assert updated > 1200.0
+
+    def test_hint_heavy_solve_does_not_over_increase_rating(self) -> None:
+        clean = update_problem_difficulty(1200.0, solved=True, max_hint_level=0)
+        assisted = update_problem_difficulty(1200.0, solved=True, max_hint_level=4)
+        assert assisted < clean
+
+    def test_failed_submission_reduces_rating(self) -> None:
+        updated = update_problem_difficulty(1200.0, solved=False, max_hint_level=0)
+        assert updated < 1200.0
